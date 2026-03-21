@@ -60,6 +60,7 @@ const el = {
   categoryChips: document.getElementById("categoryChips"),
   presetGrid: document.getElementById("presetGrid"),
   selectedItemNote: document.getElementById("selectedItemNote"),
+  saleFormPanel: document.querySelector(".sale-form-panel"),
   saleForm: document.getElementById("saleForm"),
   shiftCashierName: document.getElementById("shiftCashierName"),
   startShiftBtn: document.getElementById("startShiftBtn"),
@@ -599,9 +600,33 @@ function drawPresetGrid() {
       const preset = state.presets.find((p) => p.id === card.dataset.id);
       if (!preset) return;
       selectPreset(preset);
-      el.amountPaid.focus();
-      updateComputed();
+      runPresetSelectionFlow();
     });
+  });
+}
+
+function runPresetSelectionFlow() {
+  // Make preset selection feel like an action: confirm, move user to next step, focus payment.
+  highlightSelectionFeedback();
+
+  if (el.saleFormPanel) {
+    el.saleFormPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+
+  window.setTimeout(() => {
+    el.amountPaid.focus();
+    el.amountPaid.select();
+    updateComputed();
+  }, 220);
+}
+
+function highlightSelectionFeedback() {
+  [el.selectedItemNote, el.saleFormPanel].forEach((node) => {
+    if (!node) return;
+    node.classList.remove("selection-flash");
+    void node.offsetWidth;
+    node.classList.add("selection-flash");
+    window.setTimeout(() => node.classList.remove("selection-flash"), 320);
   });
 }
 
@@ -633,7 +658,7 @@ function updateSelectedPresetNote() {
     return;
   }
   const overrideTag = state.priceOverrideActive ? " | Price override active" : "";
-  el.selectedItemNote.textContent = `Selected: ${selected.item_name} (${money(selected.default_price)})${overrideTag}`;
+  el.selectedItemNote.textContent = `Selected: ${selected.item_name} - ${money(selected.default_price)}${overrideTag}`;
 }
 
 function applyCashierInputPolicy() {

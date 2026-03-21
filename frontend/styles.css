@@ -264,6 +264,10 @@ select {
   color: #6b5a45;
 }
 
+.selection-flash {
+  animation: selectionFlash 280ms ease;
+}
+
 input[readonly] {
   background: #f5efe3;
   color: #5f5240;
@@ -499,6 +503,21 @@ body.flash-ok {
   to {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+
+@keyframes selectionFlash {
+  0% {
+    box-shadow: 0 0 0 0 rgba(204, 111, 43, 0);
+    background-color: transparent;
+  }
+  40% {
+    box-shadow: 0 0 0 3px rgba(204, 111, 43, 0.18);
+    background-color: rgba(255, 231, 197, 0.55);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(204, 111, 43, 0);
+    background-color: transparent;
   }
 }
 
