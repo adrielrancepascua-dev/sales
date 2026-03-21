@@ -343,6 +343,10 @@ label {
   cursor: pointer;
 }
 
+.btn-primary.submit-ready {
+  box-shadow: 0 0 0 3px rgba(204, 111, 43, 0.22);
+}
+
 .result-box {
   margin-top: 12px;
   border-radius: 12px;

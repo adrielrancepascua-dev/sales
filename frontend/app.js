@@ -68,6 +68,7 @@ const el = {
   shiftStatus: document.getElementById("shiftStatus"),
   itemName: document.getElementById("itemName"),
   category: document.getElementById("category"),
+  categoryLabel: document.getElementById("category")?.closest("label"),
   quantity: document.getElementById("quantity"),
   unitPrice: document.getElementById("unitPrice"),
   priceOverrideBtn: document.getElementById("priceOverrideBtn"),
@@ -76,6 +77,7 @@ const el = {
   paymentButtons: document.querySelectorAll(".pay-btn"),
   qtyButtons: document.querySelectorAll(".qty-btn"),
   notes: document.getElementById("notes"),
+  notesLabel: document.getElementById("notes")?.closest("label"),
   afterSubmitBehavior: document.getElementById("afterSubmitBehavior"),
   submitBtn: document.getElementById("submitBtn"),
   uiTotal: document.getElementById("uiTotal"),
@@ -131,6 +133,7 @@ function boot() {
   syncPaymentButtons();
   updateSelectedPresetNote();
   updateComputed();
+  updateSubmitButtonState();
   syncPresetsCollapseUI();
   tickClock();
   setInterval(tickClock, 1000);
@@ -607,6 +610,13 @@ function drawPresetGrid() {
 
 function runPresetSelectionFlow() {
   // Make preset selection feel like an action: confirm, move user to next step, focus payment.
+  if (el.paymentMethod.value === "cash") {
+    const quantity = Number(el.quantity.value || 0);
+    const unit = Number(el.unitPrice.value || 0);
+    const total = quantity * unit;
+    el.amountPaid.value = total > 0 ? String(total) : "";
+  }
+
   highlightSelectionFeedback();
 
   if (el.saleFormPanel) {
@@ -617,6 +627,7 @@ function runPresetSelectionFlow() {
     el.amountPaid.focus();
     el.amountPaid.select();
     updateComputed();
+    updateSubmitButtonState();
   }, 220);
 }
 
@@ -645,6 +656,7 @@ function selectPreset(preset) {
 function clearSelectedPreset() {
   state.selectedPresetId = "";
   state.priceOverrideActive = false;
+  updateSubmitButtonState();
 }
 
 function getSelectedPreset() {
@@ -655,10 +667,12 @@ function updateSelectedPresetNote() {
   const selected = getSelectedPreset();
   if (!selected) {
     el.selectedItemNote.textContent = "No preset selected yet.";
+    updateSubmitButtonState();
     return;
   }
   const overrideTag = state.priceOverrideActive ? " | Price override active" : "";
   el.selectedItemNote.textContent = `Selected: ${selected.item_name} - ${money(selected.default_price)}${overrideTag}`;
+  updateSubmitButtonState();
 }
 
 function applyCashierInputPolicy() {
@@ -666,6 +680,26 @@ function applyCashierInputPolicy() {
   el.itemName.readOnly = isCashier;
   el.category.readOnly = isCashier;
   el.unitPrice.readOnly = isCashier && !state.priceOverrideActive;
+
+  if (el.categoryLabel) el.categoryLabel.classList.toggle("hidden", isCashier);
+  if (el.notesLabel) el.notesLabel.classList.toggle("hidden", isCashier);
+
+  updateSubmitButtonState();
+}
+
+function updateSubmitButtonState() {
+  const selected = getSelectedPreset();
+  const isCashier = state.roleMode === "cashier";
+
+  if (isCashier && selected) {
+    const shortName = String(selected.item_name || "").slice(0, 22);
+    el.submitBtn.textContent = `Submit ${shortName}`;
+    el.submitBtn.classList.add("submit-ready");
+    return;
+  }
+
+  el.submitBtn.textContent = "Submit Sale";
+  el.submitBtn.classList.remove("submit-ready");
 }
 
 function drawPresetTable() {
