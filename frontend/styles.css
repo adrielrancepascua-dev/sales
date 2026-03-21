@@ -162,6 +162,10 @@ main {
   align-items: center;
 }
 
+#presetsBody {
+  margin-top: 10px;
+}
+
 input,
 select,
 button {
@@ -526,6 +530,14 @@ body.flash-ok {
     padding: 12px;
   }
 
+  .sale-form-panel {
+    order: 1;
+  }
+
+  .presets-panel {
+    order: 2;
+  }
+
   .topbar {
     flex-direction: column;
   }
@@ -541,5 +553,11 @@ body.flash-ok {
 
   .summary-cards {
     grid-template-columns: 1fr;
+  }
+
+  #togglePresetsBtn {
+    width: auto;
+    padding: 8px 12px;
+    font-size: 0.85rem;
   }
 }

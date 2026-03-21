@@ -37,6 +37,7 @@ const state = {
   transactions: load(STORAGE.tx, []),
   activeCategory: "All",
   roleMode: "cashier",
+  presetsCollapsed: false,
   shiftCashier: sessionStorage.getItem(SESSION.shiftCashier) || "",
   editingPresetId: "",
   selectedPresetId: "",
@@ -54,6 +55,8 @@ const el = {
   metaNow: document.getElementById("metaNow"),
   metaStatus: document.getElementById("metaStatus"),
   itemSearch: document.getElementById("itemSearch"),
+  togglePresetsBtn: document.getElementById("togglePresetsBtn"),
+  presetsBody: document.getElementById("presetsBody"),
   categoryChips: document.getElementById("categoryChips"),
   presetGrid: document.getElementById("presetGrid"),
   selectedItemNote: document.getElementById("selectedItemNote"),
@@ -112,6 +115,7 @@ function boot() {
   bindShiftControls();
   bindQuickControls();
   bindFormLogic();
+  bindPresetCollapse();
   bindPresetManager();
   bindSettings();
   hydrateSettingsForm();
@@ -126,8 +130,41 @@ function boot() {
   syncPaymentButtons();
   updateSelectedPresetNote();
   updateComputed();
+  syncPresetsCollapseUI();
   tickClock();
   setInterval(tickClock, 1000);
+}
+
+function bindPresetCollapse() {
+  if (!el.togglePresetsBtn || !el.presetsBody) return;
+
+  el.togglePresetsBtn.addEventListener("click", () => {
+    state.presetsCollapsed = !state.presetsCollapsed;
+    syncPresetsCollapseUI();
+  });
+
+  const mobileMedia = window.matchMedia("(max-width: 640px)");
+  const applyMobileDefault = (event) => {
+    if (event.matches) {
+      state.presetsCollapsed = true;
+    } else {
+      state.presetsCollapsed = false;
+    }
+    syncPresetsCollapseUI();
+  };
+
+  applyMobileDefault(mobileMedia);
+  if (mobileMedia.addEventListener) {
+    mobileMedia.addEventListener("change", applyMobileDefault);
+  } else if (mobileMedia.addListener) {
+    mobileMedia.addListener(applyMobileDefault);
+  }
+}
+
+function syncPresetsCollapseUI() {
+  if (!el.togglePresetsBtn || !el.presetsBody) return;
+  el.presetsBody.classList.toggle("hidden", state.presetsCollapsed);
+  el.togglePresetsBtn.textContent = state.presetsCollapsed ? "Show Presets" : "Hide Presets";
 }
 
 function migrateOldSettings() {
