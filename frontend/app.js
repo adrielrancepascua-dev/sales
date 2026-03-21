@@ -27,7 +27,7 @@ const DEMO_PRESETS = [
 const state = {
   presets: load(STORAGE.presets, DEMO_PRESETS),
   settings: load(STORAGE.settings, {
-    business_name: "Demo Store",
+    business_name: "CounterFlow",
     business_id: "BIZ-001",
     webhook_url: DEFAULT_WEBHOOK_URL,
     remember_api_key: false,
@@ -467,7 +467,7 @@ function bindSettings() {
   el.settingsForm.addEventListener("submit", (event) => {
     event.preventDefault();
 
-    state.settings.business_name = val(el.cfgBusinessName) || "Demo Store";
+    state.settings.business_name = val(el.cfgBusinessName) || "CounterFlow";
     state.settings.business_id = val(el.cfgBusinessId) || "BIZ-001";
     state.settings.webhook_url = val(el.cfgWebhook);
     state.settings.remember_api_key = !!el.cfgRememberApiKey.checked;
@@ -489,7 +489,7 @@ function bindSettings() {
 }
 
 function hydrateSettingsForm() {
-  el.cfgBusinessName.value = state.settings.business_name || "Demo Store";
+  el.cfgBusinessName.value = state.settings.business_name || "CounterFlow";
   el.cfgBusinessId.value = state.settings.business_id || "BIZ-001";
   el.cfgWebhook.value = state.settings.webhook_url || "";
   el.cfgRememberApiKey.checked = !!state.settings.remember_api_key;
@@ -503,9 +503,9 @@ function getApiKey() {
 }
 
 function hydrateMeta() {
-  const displayName = state.settings.business_name || "Demo Store";
+  const displayName = state.settings.business_name || "CounterFlow";
   el.metaBusiness.textContent = displayName;
-  document.title = `${displayName} POS Demo`;
+  document.title = `${displayName} POS`;
   const ready = !!(state.settings.webhook_url && getApiKey());
   el.metaStatus.textContent = ready ? "Configured" : "Not Configured";
   el.metaStatus.classList.toggle("status-online", ready);

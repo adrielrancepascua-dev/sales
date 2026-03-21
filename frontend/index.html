@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CounterFlow POS Demo</title>
+  <title>CounterFlow POS</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
@@ -15,7 +15,7 @@
 
   <header class="topbar">
     <div class="brand-wrap">
-      <h1>CounterFlow POS Demo</h1>
+      <h1>CounterFlow POS</h1>
       <p>Fast sales entry for small shops and stalls</p>
     </div>
     <div class="meta-wrap">
@@ -37,8 +37,8 @@
   <nav class="tabs">
     <button class="tab active" data-tab="sales">Sales Entry</button>
     <button class="tab" data-tab="summary">Today's Summary</button>
-    <button class="tab owner-only" data-tab="presets">Preset Manager</button>
-    <button class="tab owner-only" data-tab="settings">Settings</button>
+    <button class="tab owner-only hidden" data-tab="presets">Preset Manager</button>
+    <button class="tab owner-only hidden" data-tab="settings">Settings</button>
     <div class="mode-switch">
       <button id="modeCashier" class="tab mini active" type="button">Cashier Mode</button>
       <button id="modeOwner" class="tab mini" type="button">Owner Mode</button>
@@ -156,7 +156,7 @@
 
     <section id="view-summary" class="view">
       <section class="card local-warning">
-        <strong>Note:</strong> This summary is from this device's successful submissions only.
+        <strong>Note:</strong> Summary is based on this device. Central dashboard can be enabled.
       </section>
       <div class="summary-cards">
         <article class="card stat-card">
@@ -222,7 +222,7 @@
         <form id="settingsForm" class="settings-form">
           <label>
             Business Display Name
-            <input id="cfgBusinessName" value="Demo Store" required>
+            <input id="cfgBusinessName" value="CounterFlow" required>
           </label>
           <label>
             Owner Access Code

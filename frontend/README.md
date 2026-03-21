@@ -32,5 +32,5 @@ Notes
 - Presets are editable and stored in browser localStorage.
 - Recent transactions and summary are based on successful submissions recorded in localStorage.
 - Summary is intentionally labeled as device-local and not backend source of truth.
-- This is a V1 cashier-first frontend and is intentionally simple.
+- This is a cashier-first frontend and is intentionally simple.
 - Sensitive actions (price override, preset delete) require owner access code.
