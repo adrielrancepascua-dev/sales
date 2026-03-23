@@ -74,6 +74,18 @@ body {
   color: #f2ddbd;
 }
 
+.instant-note {
+  display: inline-block;
+  margin-top: 8px;
+  padding: 4px 10px;
+  border: 1px solid rgba(255, 232, 196, 0.55);
+  border-radius: 999px;
+  color: #ffe6c2;
+  background: rgba(255, 246, 228, 0.1);
+  font-weight: 700;
+  font-size: 0.78rem;
+}
+
 .meta-wrap {
   display: flex;
   gap: 16px;
@@ -484,6 +496,16 @@ label {
 .status-offline {
   background: #f7dfd9;
   color: #8f261b;
+}
+
+.status-demo {
+  background: #e5f4ff;
+  color: #1d5f8f;
+}
+
+.result-box.ok {
+  font-size: 1.02rem;
+  font-weight: 800;
 }
 
 body.flash-ok {

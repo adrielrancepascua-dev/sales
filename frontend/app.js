@@ -9,7 +9,7 @@ const SESSION = {
   apiKey: "cindys_api_key_session_v1"
 };
 
-const DEFAULT_WEBHOOK_URL = "http://159.223.54.62:5678/webhook/sales-general-entry-v2";
+const DEFAULT_WEBHOOK_URL = "";
 
 const DEMO_PRESETS = [
   { id: uid(), item_name: "Pandesal", default_price: 3, category: "Bread", active: true, order: 1 },
@@ -177,11 +177,11 @@ function migrateOldSettings() {
     state.settings.api_key = "";
   }
 
-  if (!state.settings.webhook_url) {
-    state.settings.webhook_url = DEFAULT_WEBHOOK_URL;
-  }
-
   save(STORAGE.settings, state.settings);
+}
+
+function isBackendConfigured() {
+  return !!(state.settings.webhook_url && getApiKey());
 }
 
 function bindTabs() {
@@ -346,10 +346,7 @@ function bindFormLogic() {
     }
 
     const apiKey = getApiKey();
-    if (!state.settings.webhook_url || !apiKey) {
-      showResult(false, "Please save webhook URL and API key in Settings first.");
-      return;
-    }
+    const backendReady = isBackendConfigured();
 
     const isCashier = state.roleMode === "cashier";
     const selectedPreset = getSelectedPreset();
@@ -377,6 +374,24 @@ function bindFormLogic() {
       client_request_id
     };
 
+    if (!backendReady) {
+      const demoChange = Number(payload.amount_paid) - (Number(payload.quantity) * Number(payload.unit_price));
+      const demoResponse = {
+        success: true,
+        mode: "demo",
+        change: demoChange,
+        transaction_id: `DEMO-${Date.now()}`,
+        message: "Saved locally"
+      };
+
+      saveTransaction(payload, demoResponse, 200);
+      showResult(true, `Sale Recorded ✓ Demo mode saved locally. Change: ${money(demoChange)}`);
+      drawRecent();
+      drawSummary();
+      resetAfterSubmit();
+      return;
+    }
+
     el.submitBtn.disabled = true;
     el.submitBtn.textContent = "Submitting...";
 
@@ -398,18 +413,9 @@ function bindFormLogic() {
         return;
       }
 
-      const tx = {
-        local_id: uid(),
-        created_at: new Date().toISOString(),
-        payload,
-        response: data,
-        status_code: response.status
-      };
-      state.transactions.unshift(tx);
-      state.transactions = state.transactions.slice(0, 250);
-      save(STORAGE.tx, state.transactions);
+      saveTransaction(payload, data, response.status);
 
-      showResult(true, `Sale recorded. Change: ${money(data.change ?? 0)}. Transaction: ${data.transaction_id || "n/a"}`);
+      showResult(true, `Sale Recorded ✓ Change: ${money(data.change ?? 0)}. Transaction: ${data.transaction_id || "n/a"}`);
       drawRecent();
       drawSummary();
       resetAfterSubmit();
@@ -417,9 +423,22 @@ function bindFormLogic() {
       showResult(false, "Cannot reach backend. Check webhook URL or internet.");
     } finally {
       el.submitBtn.disabled = false;
-      el.submitBtn.textContent = "Submit Sale";
+      updateSubmitButtonState();
     }
   });
+}
+
+function saveTransaction(payload, response, statusCode) {
+  const tx = {
+    local_id: uid(),
+    created_at: new Date().toISOString(),
+    payload,
+    response,
+    status_code: statusCode
+  };
+  state.transactions.unshift(tx);
+  state.transactions = state.transactions.slice(0, 250);
+  save(STORAGE.tx, state.transactions);
 }
 
 function resetAfterSubmit() {
@@ -547,10 +566,11 @@ function hydrateMeta() {
   const displayName = state.settings.business_name || "CounterFlow";
   el.metaBusiness.textContent = displayName;
   document.title = `${displayName} POS`;
-  const ready = !!(state.settings.webhook_url && getApiKey());
-  el.metaStatus.textContent = ready ? "Configured" : "Not Configured";
+  const ready = isBackendConfigured();
+  el.metaStatus.textContent = ready ? "Live Backend" : "Demo Mode";
   el.metaStatus.classList.toggle("status-online", ready);
-  el.metaStatus.classList.toggle("status-offline", !ready);
+  el.metaStatus.classList.toggle("status-demo", !ready);
+  el.metaStatus.classList.toggle("status-offline", false);
 }
 
 function tickClock() {
@@ -666,7 +686,7 @@ function getSelectedPreset() {
 function updateSelectedPresetNote() {
   const selected = getSelectedPreset();
   if (!selected) {
-    el.selectedItemNote.textContent = "No preset selected yet.";
+    el.selectedItemNote.textContent = "Tap an item on the left to start.";
     updateSubmitButtonState();
     return;
   }
