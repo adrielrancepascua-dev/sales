@@ -772,8 +772,8 @@ function drawPresetTable() {
 function requestManagerApproval(actionLabel) {
   const ownerCode = String(state.settings.owner_code || "").trim();
   if (!ownerCode) {
-    showResult(false, `Set Owner Access Code in Settings before ${actionLabel.toLowerCase()}.`);
-    return false;
+    // If no owner code is set, let them proceed.
+    return true;
   }
 
   const input = window.prompt(`Manager approval required: ${actionLabel}. Enter owner code`);
