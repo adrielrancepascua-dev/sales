@@ -4,261 +4,355 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>CounterFlow POS</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css">
+  <style>
+    :root {
+      --bg: #ffffff;
+      --text: #171717;
+      --text-muted: #666666;
+      --border: #e5e5e5;
+      --surface: #fafafa;
+      --action: #171717;
+      --action-text: #ffffff;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .container {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    /* Header */
+    header {
+      padding: 24px 0;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 56px;
+    }
+
+    .header-inner {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      font-weight: 600;
+      font-size: 1.1rem;
+      letter-spacing: -0.01em;
+    }
+
+    .nav-btn {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      transition: color 0.15s;
+    }
+    
+    .nav-btn:hover {
+      color: var(--text);
+    }
+
+    /* Hero */
+    .hero {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 48px;
+      align-items: start;
+      margin-bottom: 80px;
+    }
+
+    h1 {
+      font-size: 2.25rem;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      line-height: 1.15;
+      margin-bottom: 16px;
+    }
+
+    .hero p {
+      font-size: 1rem;
+      color: var(--text-muted);
+      margin-bottom: 24px;
+    }
+
+    .btn {
+      display: inline-block;
+      background: var(--action);
+      color: var(--action-text);
+      padding: 10px 20px;
+      border-radius: 6px;
+      font-weight: 500;
+      font-size: 0.9rem;
+      border: 1px solid var(--action);
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+
+    .btn:hover {
+      background: #333;
+    }
+
+    .btn-secondary {
+      background: var(--bg);
+      color: var(--text);
+      border-color: var(--border);
+    }
+
+    .btn-secondary:hover {
+      background: var(--surface);
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 12px;
+    }
+
+    /* Minimalist Video Placeholder */
+    .demo-frame {
+      width: 100%;
+      max-width: 300px;
+      aspect-ratio: 9/19;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    }
+
+    .demo-frame video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    /* Sections */
+    section {
+      margin-bottom: 72px;
+    }
+
+    h2 {
+      font-size: 1.15rem;
+      font-weight: 600;
+      margin-bottom: 24px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 32px;
+    }
+
+    .feature-item h3 {
+      font-size: 0.95rem;
+      font-weight: 600;
+      margin-bottom: 4px;
+      color: var(--text);
+    }
+
+    .feature-item p {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+    }
+
+    /* Step List */
+    .steps {
+      display: grid;
+      gap: 20px;
+    }
+
+    .step {
+      display: grid;
+      grid-template-columns: 24px 1fr;
+      gap: 12px;
+      align-items: baseline;
+    }
+
+    .step-num {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      width: 24px;
+      height: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Call to Action */
+    .footer-cta {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 32px;
+      text-align: center;
+    }
+
+    .footer-cta h2 {
+      border: none;
+      margin-bottom: 8px;
+      padding: 0;
+    }
+
+    .footer-cta p {
+      font-size: 0.95rem;
+      color: var(--text-muted);
+      margin-bottom: 20px;
+    }
+
+    footer {
+      padding: 24px 0;
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 0.8rem;
+      border-top: 1px solid var(--border);
+    }
+
+    @media (max-width: 640px) {
+      .hero {
+        grid-template-columns: 1fr;
+        gap: 40px;
+        margin-bottom: 56px;
+      }
+      .demo-frame {
+        margin: 0 auto;
+      }
+      header {
+        margin-bottom: 40px;
+      }
+    }
+  </style>
 </head>
 <body>
-  <div class="bg-shape bg-shape-a"></div>
-  <div class="bg-shape bg-shape-b"></div>
 
-  <header class="topbar">
-    <div class="brand-wrap">
-      <h1>CounterFlow POS</h1>
-      <p>No notebook. No manual math. Just tap and record sales.</p>
-      <small class="instant-note">Works instantly. No setup needed.</small>
-    </div>
-    <div class="meta-wrap">
-      <div class="meta-item">
-        <span>Business</span>
-        <strong id="metaBusiness">BIZ-001</strong>
-      </div>
-      <div class="meta-item">
-        <span>Now</span>
-        <strong id="metaNow">--</strong>
-      </div>
-      <div class="meta-item">
-        <span>Status</span>
-        <strong id="metaStatus" class="status-pill status-offline">Not Configured</strong>
-      </div>
+  <header>
+    <div class="container header-inner">
+      <div class="logo">CounterFlow</div>
+      <a href="app.html" class="nav-btn">Try Demo App</a>
     </div>
   </header>
 
-  <nav class="tabs">
-    <button class="tab active" data-tab="sales">Sales Entry</button>
-    <button class="tab" data-tab="summary">Today's Summary</button>
-    <button class="tab owner-only hidden" data-tab="presets">Preset Manager</button>
-    <button class="tab owner-only hidden" data-tab="settings">Settings</button>
-    <div class="mode-switch">
-      <button id="modeCashier" class="tab mini active" type="button">Cashier Mode</button>
-      <button id="modeOwner" class="tab mini" type="button">Owner Mode</button>
-    </div>
-  </nav>
-
-  <main>
-    <section id="view-sales" class="view active">
-      <div class="grid-two">
-        <aside class="card presets-panel">
-          <div class="panel-head">
-            <h2>Preset Items</h2>
-            <button id="togglePresetsBtn" type="button" class="preset-btn">Hide Presets</button>
-          </div>
-          <div id="presetsBody">
-            <input id="itemSearch" type="text" placeholder="Search item">
-            <div id="categoryChips" class="chips"></div>
-            <div id="presetGrid" class="preset-grid"></div>
-          </div>
-        </aside>
-
-        <section class="card sale-form-panel">
-          <h2>Record Sale</h2>
-          <div class="shift-box">
-            <label>
-              Cashier (set once per shift)
-              <input id="shiftCashierName" placeholder="e.g. Mae">
-            </label>
-            <div class="shift-actions">
-              <button id="startShiftBtn" type="button" class="preset-btn">Start Shift</button>
-              <button id="endShiftBtn" type="button" class="preset-btn danger">End Shift</button>
-            </div>
-            <small id="shiftStatus">No active shift</small>
-          </div>
-          <div class="selected-item-note" id="selectedItemNote">Tap an item on the left to start.</div>
-
-          <form id="saleForm">
-            <div class="form-grid">
-              <label>
-                Item Name
-                <input id="itemName" required readonly>
-              </label>
-              <label>
-                Category
-                <input id="category" placeholder="e.g. Bread" readonly>
-              </label>
-              <label>
-                Quantity
-                <input id="quantity" type="number" min="1" step="1" value="1" required>
-                <div class="qty-quick">
-                  <button type="button" class="preset-btn qty-btn" data-qty-add="1">+1</button>
-                  <button type="button" class="preset-btn qty-btn" data-qty-add="2">+2</button>
-                  <button type="button" class="preset-btn qty-btn" data-qty-add="5">+5</button>
-                  <button type="button" class="preset-btn qty-btn" data-qty-reset="1">Reset</button>
-                </div>
-              </label>
-              <label>
-                Unit Price
-                <input id="unitPrice" type="number" min="0" step="0.01" required readonly>
-                <button id="priceOverrideBtn" type="button" class="preset-btn">Manager Price Override</button>
-              </label>
-              <label>
-                Amount Paid
-                <input id="amountPaid" type="number" min="0" step="0.01" required>
-              </label>
-              <label>
-                Payment Method
-                <div id="paymentButtons" class="pay-buttons">
-                  <button type="button" class="pay-btn active" data-method="cash">Cash</button>
-                  <button type="button" class="pay-btn" data-method="gcash">GCash</button>
-                  <button type="button" class="pay-btn" data-method="card">Card</button>
-                  <button type="button" class="pay-btn" data-method="other">Other</button>
-                </div>
-                <input id="paymentMethod" type="hidden" value="cash">
-              </label>
-              <label>
-                Notes
-                <input id="notes" placeholder="Optional note">
-              </label>
-            </div>
-
-            <div class="totals-row">
-              <div>
-                <span>Total</span>
-                <strong id="uiTotal">PHP 0.00</strong>
-              </div>
-              <div>
-                <span>Expected Change</span>
-                <strong id="uiChange">PHP 0.00</strong>
-              </div>
-              <div>
-                <span>Client Request ID</span>
-                <strong id="uiRequestId">--</strong>
-              </div>
-            </div>
-
-            <button id="submitBtn" type="submit" class="btn-primary">Submit Sale</button>
-            <div class="post-submit-box owner-only-control hidden">
-              <label>
-                After Submit
-                <select id="afterSubmitBehavior">
-                  <option value="keep_item">Keep item for next sale</option>
-                  <option value="clear_item">Clear item fields</option>
-                </select>
-              </label>
-            </div>
-          </form>
-
-          <div id="resultBox" class="result-box hidden"></div>
-        </section>
+  <main class="container">
+    <section class="hero">
+      <div>
+        <h1>No notebook.<br>No manual math.<br>Just tap and record sales.</h1>
+        <p>A bare-minimum POS for food stalls, kiosks, and small shops. Built for cashiers who need to enter transactions in seconds without complicated software.</p>
+        <div class="hero-actions">
+          <a href="app.html" class="btn">Try the Live Demo</a>
+          <a href="#pilot" class="btn btn-secondary">Try it for your shop</a>
+        </div>
       </div>
-
-      <section class="card recent-panel">
-        <h2>Recent Transactions</h2>
-        <div id="recentList" class="recent-list"></div>
-      </section>
-    </section>
-
-    <section id="view-summary" class="view">
-      <section class="card local-warning">
-        <strong>Note:</strong> Summary is based on this device. Central dashboard can be enabled.
-      </section>
-      <div class="summary-cards">
-        <article class="card stat-card">
-          <h3>Today Total</h3>
-          <strong id="sumTodayTotal">PHP 0.00</strong>
-        </article>
-        <article class="card stat-card">
-          <h3>Transactions</h3>
-          <strong id="sumTxCount">0</strong>
-        </article>
-        <article class="card stat-card">
-          <h3>Cash Total</h3>
-          <strong id="sumCash">PHP 0.00</strong>
-        </article>
-        <article class="card stat-card">
-          <h3>GCash Total</h3>
-          <strong id="sumGcash">PHP 0.00</strong>
-        </article>
+      <div>
+        <div class="demo-frame">
+          <video autoplay loop muted playsinline>
+            <source src="yessss.mp4" type="video/mp4">
+            Your browser does not support the video tag.
+          </video>
+        </div>
+        <p style="text-align: center; font-size: 0.85rem; color: var(--text-muted); margin-top: 12px;">Tap → Enter → Done (3 seconds)</p>
       </div>
-      <section class="card">
-        <h2>Top Selling Items</h2>
-        <div id="topItems" class="top-items"></div>
-      </section>
     </section>
 
-    <section id="view-presets" class="view">
-      <section class="card">
-        <h2>Owner Preset Manager</h2>
-        <form id="presetForm" class="preset-form">
-          <input id="presetEditId" type="hidden">
-          <label>
-            Item Name
-            <input id="presetName" required>
-          </label>
-          <label>
-            Price
-            <input id="presetPrice" type="number" min="0" step="0.01" required>
-          </label>
-          <label>
-            Category
-            <input id="presetCategory" required>
-          </label>
-          <label>
-            Order
-            <input id="presetOrder" type="number" min="1" step="1" value="1" required>
-          </label>
-          <label class="inline-check">
-            <input id="presetActive" type="checkbox" checked>
-            Active
-          </label>
-          <button id="presetSubmitBtn" type="submit" class="btn-primary">Add Preset</button>
-          <button id="presetCancelBtn" type="button" class="preset-btn hidden">Cancel Edit</button>
-        </form>
-
-        <div id="presetTable" class="preset-table"></div>
-      </section>
+    <section>
+      <h2>Common problems solved</h2>
+      <div class="grid">
+        <div class="feature-item">
+          <h3>Replace paper logs</h3>
+          <p>Handwriting gets sloppy when you're busy. Books get stained or lost. This saves it all digitally.</p>
+        </div>
+        <div class="feature-item">
+          <h3>Stop math errors</h3>
+          <p>Totals and exact change are calculated instantly, reducing mistakes under pressure.</p>
+        </div>
+        <div class="feature-item">
+          <h3>Instant daily totals</h3>
+          <p>Know exactly how much cash and digital payments you collected without a 30-minute tally at closing.</p>
+        </div>
+      </div>
     </section>
 
-    <section id="view-settings" class="view">
-      <section class="card settings-panel">
-        <h2>Owner Setup</h2>
-        <p>Set display branding and protect owner actions. Technical backend options are in Advanced.</p>
-        <form id="settingsForm" class="settings-form">
-          <label>
-            Business Display Name
-            <input id="cfgBusinessName" value="CounterFlow" required>
-          </label>
-          <label>
-            Owner Access Code
-            <input id="cfgOwnerCode" placeholder="Set a simple owner code">
-          </label>
-          <details class="tech-details">
-            <summary>Advanced Technical Settings</summary>
-            <div class="tech-grid">
-          <label>
-            Business ID
-            <input id="cfgBusinessId" value="BIZ-001" required>
-          </label>
-          <label>
-            Webhook URL
-            <input id="cfgWebhook" placeholder="https://your-n8n/webhook/..." required>
-          </label>
-          <label>
-            API Key
-            <input id="cfgApiKey" placeholder="x-api-key value" required>
-          </label>
-          <label class="inline-check">
-            <input id="cfgRememberApiKey" type="checkbox">
-            Remember API key on this device
-          </label>
-            </div>
-          </details>
-          <button type="submit" class="btn-primary">Save Settings</button>
-        </form>
-      </section>
+    <section>
+      <h2>How it works in practice</h2>
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">1</div>
+          <div class="feature-item">
+            <h3>Tap an item</h3>
+            <p>Select a preset item. The price auto-fills immediately.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <div class="feature-item">
+            <h3>Accept payment</h3>
+            <p>Enter the cash amount handed to you. Change is displayed on screen.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <div class="feature-item">
+            <h3>Submit</h3>
+            <p>One tap records the sale. Ready for the next customer in under 5 seconds.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2>After one day of using this</h2>
+      <div class="grid">
+        <div class="feature-item">
+          <h3>No manual tally at closing</h3>
+          <p>Your total sales are already computed.</p>
+        </div>
+        <div class="feature-item">
+          <h3>Fewer cashier mistakes</h3>
+          <p>Change and totals are always correct.</p>
+        </div>
+        <div class="feature-item">
+          <h3>Clear daily visibility</h3>
+          <p>You instantly see how your store performed.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="pilot" class="footer-cta">
+      <h2>Try it for your store (Free)</h2>
+      <p>I'm building CounterFlow for real small business owners. I need pilot shops to test it out and share honest feedback.</p>
+      <a href="mailto:adrielrancepascua@gmail.com?subject=I want to try CounterFlow&body=Hi Adriel,%0D%0A%0D%0AI'm interested in using CounterFlow for my shop." class="btn">Try it for your shop</a>
+      <p style="font-size:0.85rem; color:#666; margin-top: 16px;">
+        Only taking 1–2 pilot shops this week.
+      </p>
     </section>
   </main>
 
-  <script src="app.js"></script>
+  <footer>
+    <div class="container">
+      &copy; 2026 CounterFlow POS. Built for fast cash entry.
+    </div>
+  </footer>
+
 </body>
 </html>

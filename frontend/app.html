@@ -1,0 +1,264 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CounterFlow POS</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="bg-shape bg-shape-a"></div>
+  <div class="bg-shape bg-shape-b"></div>
+
+  <header class="topbar">
+    <div class="brand-wrap">
+      <h1>CounterFlow POS</h1>
+      <p>No notebook. No manual math. Just tap and record sales.</p>
+      <small class="instant-note">Works instantly. No setup needed.</small>
+    </div>
+    <div class="meta-wrap">
+      <div class="meta-item">
+        <span>Business</span>
+        <strong id="metaBusiness">BIZ-001</strong>
+      </div>
+      <div class="meta-item">
+        <span>Now</span>
+        <strong id="metaNow">--</strong>
+      </div>
+      <div class="meta-item">
+        <span>Status</span>
+        <strong id="metaStatus" class="status-pill status-offline">Not Configured</strong>
+      </div>
+    </div>
+  </header>
+
+  <nav class="tabs">
+    <button class="tab active" data-tab="sales">Sales Entry</button>
+    <button class="tab" data-tab="summary">Today's Summary</button>
+    <button class="tab owner-only hidden" data-tab="presets">Preset Manager</button>
+    <button class="tab owner-only hidden" data-tab="settings">Settings</button>
+    <div class="mode-switch">
+      <button id="modeCashier" class="tab mini active" type="button">Cashier Mode</button>
+      <button id="modeOwner" class="tab mini" type="button">Owner Mode</button>
+    </div>
+  </nav>
+
+  <main>
+    <section id="view-sales" class="view active">
+      <div class="grid-two">
+        <aside class="card presets-panel">
+          <div class="panel-head">
+            <h2>Preset Items</h2>
+            <button id="togglePresetsBtn" type="button" class="preset-btn">Hide Presets</button>
+          </div>
+          <div id="presetsBody">
+            <input id="itemSearch" type="text" placeholder="Search item">
+            <div id="categoryChips" class="chips"></div>
+            <div id="presetGrid" class="preset-grid"></div>
+          </div>
+        </aside>
+
+        <section class="card sale-form-panel">
+          <h2>Record Sale</h2>
+          <div class="shift-box">
+            <label>
+              Cashier (set once per shift)
+              <input id="shiftCashierName" placeholder="e.g. Mae">
+            </label>
+            <div class="shift-actions">
+              <button id="startShiftBtn" type="button" class="preset-btn">Start Shift</button>
+              <button id="endShiftBtn" type="button" class="preset-btn danger">End Shift</button>
+            </div>
+            <small id="shiftStatus">No active shift</small>
+          </div>
+          <div class="selected-item-note" id="selectedItemNote">Tap an item on the left to start.</div>
+
+          <form id="saleForm">
+            <div class="form-grid">
+              <label>
+                Item Name
+                <input id="itemName" required readonly>
+              </label>
+              <label>
+                Category
+                <input id="category" placeholder="e.g. Bread" readonly>
+              </label>
+              <label>
+                Quantity
+                <input id="quantity" type="number" min="1" step="1" value="1" required>
+                <div class="qty-quick">
+                  <button type="button" class="preset-btn qty-btn" data-qty-add="1">+1</button>
+                  <button type="button" class="preset-btn qty-btn" data-qty-add="2">+2</button>
+                  <button type="button" class="preset-btn qty-btn" data-qty-add="5">+5</button>
+                  <button type="button" class="preset-btn qty-btn" data-qty-reset="1">Reset</button>
+                </div>
+              </label>
+              <label>
+                Unit Price
+                <input id="unitPrice" type="number" min="0" step="0.01" required readonly>
+                <button id="priceOverrideBtn" type="button" class="preset-btn">Manager Price Override</button>
+              </label>
+              <label>
+                Amount Paid
+                <input id="amountPaid" type="number" min="0" step="0.01" required>
+              </label>
+              <label>
+                Payment Method
+                <div id="paymentButtons" class="pay-buttons">
+                  <button type="button" class="pay-btn active" data-method="cash">Cash</button>
+                  <button type="button" class="pay-btn" data-method="gcash">GCash</button>
+                  <button type="button" class="pay-btn" data-method="card">Card</button>
+                  <button type="button" class="pay-btn" data-method="other">Other</button>
+                </div>
+                <input id="paymentMethod" type="hidden" value="cash">
+              </label>
+              <label>
+                Notes
+                <input id="notes" placeholder="Optional note">
+              </label>
+            </div>
+
+            <div class="totals-row">
+              <div>
+                <span>Total</span>
+                <strong id="uiTotal">PHP 0.00</strong>
+              </div>
+              <div>
+                <span>Expected Change</span>
+                <strong id="uiChange">PHP 0.00</strong>
+              </div>
+              <div>
+                <span>Client Request ID</span>
+                <strong id="uiRequestId">--</strong>
+              </div>
+            </div>
+
+            <button id="submitBtn" type="submit" class="btn-primary">Submit Sale</button>
+            <div class="post-submit-box owner-only-control hidden">
+              <label>
+                After Submit
+                <select id="afterSubmitBehavior">
+                  <option value="keep_item">Keep item for next sale</option>
+                  <option value="clear_item">Clear item fields</option>
+                </select>
+              </label>
+            </div>
+          </form>
+
+          <div id="resultBox" class="result-box hidden"></div>
+        </section>
+      </div>
+
+      <section class="card recent-panel">
+        <h2>Recent Transactions</h2>
+        <div id="recentList" class="recent-list"></div>
+      </section>
+    </section>
+
+    <section id="view-summary" class="view">
+      <section class="card local-warning">
+        <strong>Note:</strong> Summary is based on this device. Central dashboard can be enabled.
+      </section>
+      <div class="summary-cards">
+        <article class="card stat-card">
+          <h3>Today Total</h3>
+          <strong id="sumTodayTotal">PHP 0.00</strong>
+        </article>
+        <article class="card stat-card">
+          <h3>Transactions</h3>
+          <strong id="sumTxCount">0</strong>
+        </article>
+        <article class="card stat-card">
+          <h3>Cash Total</h3>
+          <strong id="sumCash">PHP 0.00</strong>
+        </article>
+        <article class="card stat-card">
+          <h3>GCash Total</h3>
+          <strong id="sumGcash">PHP 0.00</strong>
+        </article>
+      </div>
+      <section class="card">
+        <h2>Top Selling Items</h2>
+        <div id="topItems" class="top-items"></div>
+      </section>
+    </section>
+
+    <section id="view-presets" class="view">
+      <section class="card">
+        <h2>Owner Preset Manager</h2>
+        <form id="presetForm" class="preset-form">
+          <input id="presetEditId" type="hidden">
+          <label>
+            Item Name
+            <input id="presetName" required>
+          </label>
+          <label>
+            Price
+            <input id="presetPrice" type="number" min="0" step="0.01" required>
+          </label>
+          <label>
+            Category
+            <input id="presetCategory" required>
+          </label>
+          <label>
+            Order
+            <input id="presetOrder" type="number" min="1" step="1" value="1" required>
+          </label>
+          <label class="inline-check">
+            <input id="presetActive" type="checkbox" checked>
+            Active
+          </label>
+          <button id="presetSubmitBtn" type="submit" class="btn-primary">Add Preset</button>
+          <button id="presetCancelBtn" type="button" class="preset-btn hidden">Cancel Edit</button>
+        </form>
+
+        <div id="presetTable" class="preset-table"></div>
+      </section>
+    </section>
+
+    <section id="view-settings" class="view">
+      <section class="card settings-panel">
+        <h2>Owner Setup</h2>
+        <p>Set display branding and protect owner actions. Technical backend options are in Advanced.</p>
+        <form id="settingsForm" class="settings-form">
+          <label>
+            Business Display Name
+            <input id="cfgBusinessName" value="CounterFlow" required>
+          </label>
+          <label>
+            Owner Access Code
+            <input id="cfgOwnerCode" placeholder="Set a simple owner code">
+          </label>
+          <details class="tech-details">
+            <summary>Advanced Technical Settings</summary>
+            <div class="tech-grid">
+          <label>
+            Business ID
+            <input id="cfgBusinessId" value="BIZ-001" required>
+          </label>
+          <label>
+            Webhook URL
+            <input id="cfgWebhook" placeholder="https://your-n8n/webhook/..." required>
+          </label>
+          <label>
+            API Key
+            <input id="cfgApiKey" placeholder="x-api-key value" required>
+          </label>
+          <label class="inline-check">
+            <input id="cfgRememberApiKey" type="checkbox">
+            Remember API key on this device
+          </label>
+            </div>
+          </details>
+          <button type="submit" class="btn-primary">Save Settings</button>
+        </form>
+      </section>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
