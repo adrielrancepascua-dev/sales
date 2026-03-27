@@ -375,20 +375,7 @@ function bindFormLogic() {
     };
 
     if (!backendReady) {
-      const demoChange = Number(payload.amount_paid) - (Number(payload.quantity) * Number(payload.unit_price));
-      const demoResponse = {
-        success: true,
-        mode: "demo",
-        change: demoChange,
-        transaction_id: `DEMO-${Date.now()}`,
-        message: "Saved locally"
-      };
-
-      saveTransaction(payload, demoResponse, 200);
-      showResult(true, `Sale Recorded ✓ Demo mode saved locally. Change: ${money(demoChange)}`);
-      drawRecent();
-      drawSummary();
-      resetAfterSubmit();
+      showResult(false, "Live backend is required. Go to Settings and set your Apps Script webhook URL and API key.");
       return;
     }
 
@@ -420,7 +407,7 @@ function bindFormLogic() {
       drawSummary();
       resetAfterSubmit();
     } catch {
-      showResult(false, "Cannot reach backend. Check webhook URL or internet.");
+      showResult(false, "Cannot reach backend. Check webhook URL, API key, or internet.");
     } finally {
       el.submitBtn.disabled = false;
       updateSubmitButtonState();
@@ -567,10 +554,9 @@ function hydrateMeta() {
   el.metaBusiness.textContent = displayName;
   document.title = `${displayName} POS`;
   const ready = isBackendConfigured();
-  el.metaStatus.textContent = ready ? "Live Backend" : "Demo Mode";
+  el.metaStatus.textContent = ready ? "Live Backend" : "Setup Required";
   el.metaStatus.classList.toggle("status-online", ready);
-  el.metaStatus.classList.toggle("status-demo", !ready);
-  el.metaStatus.classList.toggle("status-offline", false);
+  el.metaStatus.classList.toggle("status-offline", !ready);
 }
 
 function tickClock() {
@@ -710,6 +696,16 @@ function applyCashierInputPolicy() {
 function updateSubmitButtonState() {
   const selected = getSelectedPreset();
   const isCashier = state.roleMode === "cashier";
+  const backendReady = isBackendConfigured();
+
+  if (!backendReady) {
+    el.submitBtn.disabled = true;
+    el.submitBtn.textContent = "Configure Live Backend";
+    el.submitBtn.classList.remove("submit-ready");
+    return;
+  }
+
+  el.submitBtn.disabled = false;
 
   if (isCashier && selected) {
     const shortName = String(selected.item_name || "").slice(0, 22);

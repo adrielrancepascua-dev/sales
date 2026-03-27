@@ -24,6 +24,10 @@ How to run
 9. Return to Sales Entry.
 10. Start cashier shift and submit transactions.
 
+Live mode behavior
+- Submit is disabled until webhook URL and API key are configured.
+- Transactions are sent live to your backend webhook; there is no local demo-submit fallback.
+
 Backend compatibility
 - payment_method values used by this UI: cash, gcash, card, other
 - This matches your current backend validation list.
